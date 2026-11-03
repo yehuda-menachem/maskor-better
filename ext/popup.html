@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<meta charset="utf-8">
+<title>משכורשת+</title>
+<style>
+  :root {
+    --bg:#f6f3ec; --ink:#23211d; --mute:#7a756a; --line:#ddd7c8; --accent:#1f5e4b; --card:#fbf9f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1d1c19; --ink:#ece8dc; --mute:#968f80; --line:#35332d; --accent:#6fb59c; --card:#242320; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; width:300px; background:var(--bg); color:var(--ink);
+         font:14px/1.4 "Segoe UI", system-ui, sans-serif; }
+  header { padding:12px 16px 10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
+  .logo { width:26px; height:26px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; }
+  .header-titles { flex:1; }
+  h1 { margin:0; font-size:16px; font-weight:600; letter-spacing:.01em; }
+  header p { margin:2px 0 0; font-size:12px; color:var(--mute); }
+  section { padding:10px 16px; }
+  h2 { margin:0 0 4px; font-size:11px; font-weight:600; color:var(--mute); letter-spacing:.06em; }
+  label.row { display:flex; justify-content:space-between; align-items:center;
+              padding:7px 0; cursor:pointer; border-bottom:1px solid var(--line); }
+  label.row:last-child { border-bottom:0; }
+  input[type=checkbox] { appearance:none; width:30px; height:17px; border-radius:9px; margin:0;
+              background:var(--line); position:relative; cursor:pointer; transition:background .15s; }
+  input[type=checkbox]::after { content:""; position:absolute; top:2px; right:2px; width:13px; height:13px;
+              border-radius:50%; background:var(--bg); transition:transform .15s; }
+  input[type=checkbox]:checked { background:var(--accent); }
+  input[type=checkbox]:checked::after { transform:translateX(-13px); }
+  input:focus-visible, select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .period { display:flex; gap:8px; padding:4px 0 8px; }
+  select { flex:1; font:inherit; color:var(--ink); background:var(--card);
+           border:1px solid var(--line); border-radius:4px; padding:5px 6px; }
+  .tools { padding:4px 16px 14px; }
+  button { width:100%; font:inherit; color:var(--ink); background:var(--card); border:1px solid var(--line);
+           border-radius:4px; padding:7px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  .off .period { opacity:.45; pointer-events:none; }
+</style>
+<header>
+  <img src="icons/icon32.png" alt="" class="logo">
+  <div class="header-titles">
+    <h1>משכורשת+</h1>
+    <p>שיפורים קטנים, בלי הפתעות</p>
+  </div>
+</header>
+<section id="lockSec">
+  <h2>תקופה</h2>
+  <label class="row">נעילת תאריך <input type="checkbox" id="lock"></label>
+  <div class="period"><select id="month"></select><select id="year"></select></div>
+</section>
+<section>
+  <h2>התנהגות</h2>
+  <label class="row">תיבת החיפוש לא מאבדת פוקוס <input type="checkbox" id="fixFocus"></label>
+  <label class="row">Enter פותח את המעסיק הראשון <input type="checkbox" id="enterNav"></label>
+  <label class="row">פוקוס אוטומטי בחיפוש <input type="checkbox" id="autoFocus"></label>
+  <label class="row">הסתרת הסבר ברשימת עובדים <input type="checkbox" id="hideNotice"></label>
+</section>
+<div class="tools"><button id="copyLog">העתק לוג</button></div>
+<script src="popup.js"></script>

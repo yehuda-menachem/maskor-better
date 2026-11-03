@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a261d"/>
+      <stop offset="50%" stop-color="#144233"/>
+      <stop offset="100%" stop-color="#1f5e4b"/>
+    </linearGradient>
+
+    <linearGradient id="mintGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#021a12" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad2)"/>
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Focus Crosshair Marks around the perimeter (Subtle) -->
+  <path d="M 64 14 L 64 19 M 64 114 L 64 109 M 14 64 L 19 64 M 114 64 L 109 64" stroke="rgba(52, 211, 153, 0.4)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Stylized Geometric 'מ' with Plus in Focus -->
+  <g filter="url(#shadow2)">
+    <!-- Modern Geometric 'מ' (Hebrew Mem) -->
+    <!-- Outer stroke or filled geometric path -->
+    <path d="M 32 36 L 68 36 A 6 6 0 0 1 74 42 L 74 54 A 6 6 0 0 1 68 60 L 52 60 L 52 76 L 86 76 A 6 6 0 0 1 92 82 L 92 92 L 38 92 A 6 6 0 0 1 32 86 Z" fill="#fbf9f4"/>
+    
+    <!-- Cutout details inside the 'מ' -->
+    <rect x="44" y="46" width="16" height="6" rx="2" fill="#144233" fill-opacity="0.2"/>
+
+    <!-- Glowing Mint '+' & Target in Upper Right -->
+    <circle cx="94" cy="40" r="18" fill="url(#mintGrad2)"/>
+    <circle cx="94" cy="40" r="18" fill="none" stroke="#ffffff" stroke-width="2" stroke-opacity="0.9"/>
+    <path d="M 94 30 L 94 50 M 84 40 L 104 40" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Focus brackets around the '+' -->
+    <path d="M 78 26 L 75 26 A 2 2 0 0 0 73 28 L 73 31" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 110 26 L 113 26 A 2 2 0 0 1 115 28 L 115 31" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 78 54 L 75 54 A 2 2 0 0 1 73 52 L 73 49" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 110 54 L 113 54 A 2 2 0 0 0 115 52 L 115 49" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
+
