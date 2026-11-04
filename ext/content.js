@@ -2,7 +2,7 @@
   'use strict';
   // ===== לוג (נשמר ע"י bridge.js; בלי נתוני עובדים/מעסיקים, רק מבנה ופעולות) =====
   const RealDate = Date; // לפני ה-Proxy, כדי שהלוג יקבל זמן אמיתי
-  const log = (m, d) => window.dispatchEvent(new CustomEvent('mb-log', { detail: { t: RealDate.now(), m, d } }));
+  const log = (m) => window.dispatchEvent(new CustomEvent('mb-log', { detail: { t: RealDate.now(), m } }));
   // ===== הגדרות (מתעדכנות חי מהחלונית דרך bridge.js) =====
   const DEFAULTS = { lock: true, year: 2025, month: 12, fixFocus: true, enterNav: true, autoFocus: true, hideNotice: true };
   const cfg = { ...DEFAULTS };
@@ -11,15 +11,18 @@
   window.addEventListener('mb-settings', (e) => {
     Object.assign(cfg, e.detail);
     try { localStorage.setItem('mb-cfg', JSON.stringify(cfg)); } catch {}
-    log('הגדרות עודכנו', e.detail);
   });
   const DAY = 21; // יום >=21 => האתר לא יחזור חודש אחורה
 
   // ===== 1. נעילת תאריך =====
+  // השעון מתקדם מהתאריך הנעול ולא קפוא: קוד שמודד זמן שעבר (אנימציות jQuery, timeouts, polling)
+  // היה רץ לנצח עם Date.now קפוא -> CPU מלא ותקיעות. ponytail: אחרי ~9 ימים פתוחים עובר לחודש הבא.
+  const T0 = RealDate.now();
   let _k, _v;
   const fixedTs = () => {
     const k = cfg.year * 100 + cfg.month; // cache: לא בונים Date בכל קריאה
-    return k === _k ? _v : (_k = k, _v = new RealDate(cfg.year, cfg.month - 1, DAY, 12).getTime());
+    if (k !== _k) (_k = k, _v = new RealDate(cfg.year, cfg.month - 1, DAY, 12).getTime());
+    return _v + RealDate.now() - T0;
   };
   function FakeDate(...a) {
     if (!new.target) return new RealDate(cfg.lock ? fixedTs() : RealDate.now()).toString();
@@ -35,11 +38,8 @@
   window.addEventListener('mousemove', (e) => {
     const a = document.activeElement;
     if (cfg.fixFocus && a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && e.target.closest?.('td[tabindex]'))
-      (e.stopImmediatePropagation(), logFocus());
+      e.stopImmediatePropagation();
   }, true);
-
-  let lastFocusLog = 0;
-  const logFocus = () => { const n = RealDate.now(); if (n - lastFocusLog > 5000) { lastFocusLog = n; log('נחסמה גניבת פוקוס'); } };
 
   // ===== עזרים =====
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -67,11 +67,16 @@
   }
 
   // הסתרת ההסבר לפי תוכן (ה-div הפנימי ביותר)
+  // רץ בכל scan (כל 150ms בזמן שינויי DOM): textContent על כל div היה ריבועי + offsetParent כפה layout.
+  // XPath על צמתי טקסט = מעבר אחד native. ponytail: אם הטקסט מפוצל בין תגיות - לא יימצא.
   function hideNotice() {
-    const d = [...document.querySelectorAll('#CDV div')]
-      .filter((x) => x.offsetParent && x.textContent.includes('זוהי רשימת העובדים'))
-      .sort((a, b) => a.textContent.length - b.textContent.length)[0];
-    if (d && cfg.hideNotice) d.style.display = 'none';
+    if (!cfg.hideNotice) return;
+    const r = document.evaluate("//*[@id='CDV']//text()[contains(., 'זוהי רשימת העובדים')]",
+      document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    for (let i = 0; i < r.snapshotLength; i++) {
+      const d = r.snapshotItem(i).parentElement?.closest('div');
+      if (d && d.style.display !== 'none') d.style.display = 'none';
+    }
   }
 
   // ===== 3. שנה/חודש: אחרי שינוי שנה האתר מאפס חודש ל-1 ובונה את הבוררים מחדש =====
@@ -150,8 +155,30 @@
     }
   }
 
-  let errAt = 0;
-  window.addEventListener('error', (e) => RealDate.now() - errAt > 2000 && (errAt = RealDate.now(), log('שגיאת JS: ' + e.message + ' @' + (e.filename || '').split('/').pop() + ':' + e.lineno)));
+  // ===== שגיאות ולאגים: כל שגיאה ייחודית פעם אחת לעמוד (ponytail: עד 30, מספיק לדיבוג) =====
+  const seen = new Set();
+  const logErr = (kind, err, where) => {
+    const msg = String(err?.message ?? err).slice(0, 200);
+    if (seen.has(msg) || seen.size >= 30) return;
+    seen.add(msg);
+    // שורת stack ראשונה מצביעה על המקור; content.js = שגיאה שלנו, אחרת של האתר
+    const at = where || (err?.stack || '').split('\n').find((l) => /:\d+:\d+/.test(l))?.trim().replace(/\)$/, '') || '';
+    log(`שגיאה (${kind}): ${msg}${at ? ' @ ' + at.split('/').pop() : ''}`);
+  };
+  window.addEventListener('error', (e) =>
+    logErr('JS', e.error || e.message, e.error ? '' : (e.filename || '').split('/').pop() + ':' + e.lineno));
+  window.addEventListener('unhandledrejection', (e) => logErr('Promise', e.reason));
+  // לאג: משימה שחוסמת את הדף מעל 300ms. ponytail: מצרפים פעם ב-10ש', מספיק כדי לראות מתי נתקע
+  let lagMax = 0, lagN = 0, lagT = 0;
+  try {
+    new PerformanceObserver((l) => {
+      for (const e of l.getEntries()) if (e.duration > 300) (lagN++, lagMax = Math.max(lagMax, e.duration));
+      if (lagN && !lagT) lagT = setTimeout(() => {
+        log(`לאג: ${lagN} חסימות, הארוכה ${Math.round(lagMax)}ms`);
+        lagN = lagMax = lagT = 0;
+      }, 10000);
+    }).observe({ type: 'longtask', buffered: true });
+  } catch {}
   log('התוסף נטען');
   if (document.body) init();
   else document.addEventListener('DOMContentLoaded', init);
