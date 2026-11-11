@@ -1,5 +1,5 @@
 // עולם מבודד: קורא הגדרות מ-storage ומעביר לסקריפט הראשי (MAIN) באירוע
-const send = (d) => window.dispatchEvent(new CustomEvent('mb-settings', { detail: d }));
+const send = (d) => window.dispatchEvent(new CustomEvent('mb-settings', { detail: JSON.stringify(d) }));
 chrome.storage.sync.get(null, send);
 chrome.storage.onChanged.addListener((ch, area) =>
   area === 'sync' && send(Object.fromEntries(Object.entries(ch).map(([k, v]) => [k, v.newValue]))));

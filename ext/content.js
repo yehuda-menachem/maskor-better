@@ -9,7 +9,7 @@
   // cache סינכרוני: ההגדרות מ-storage מגיעות אסינכרונית, אחרי שהאתר כבר חישב תקופה עם ברירת המחדל
   try { Object.assign(cfg, JSON.parse(localStorage.getItem('mb-cfg'))); } catch {}
   window.addEventListener('mb-settings', (e) => {
-    Object.assign(cfg, e.detail);
+    Object.assign(cfg, JSON.parse(e.detail));
     try { localStorage.setItem('mb-cfg', JSON.stringify(cfg)); } catch {}
   });
   const DAY = 21; // יום >=21 => האתר לא יחזור חודש אחורה

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Background Gradient: Deep Forest Emerald to Rich Teal -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a261d"/>
+      <stop offset="50%" stop-color="#144233"/>
+      <stop offset="100%" stop-color="#1f5e4b"/>
+    </linearGradient>
+
+    <!-- Card Gradient: Crisp Cream/Ivory Paper -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5f0e6"/>
+    </linearGradient>
+
+    <!-- Plus / Better Vibrant Mint Gradient -->
+    <linearGradient id="mintGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Soft Drop Shadows -->
+    <filter id="dropShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#021c14" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base Container -->
+  <rect x="8" y="8" width="112" height="112" rx="26" fill="url(#bgGrad)"/>
+  <!-- Inner Highlight Border -->
+  <rect x="8.5" y="8.5" width="111" height="111" rx="25.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Payslip / Data Card -->
+  <g filter="url(#dropShadow)">
+    <!-- Base Card -->
+    <rect x="25" y="20" width="78" height="88" rx="10" fill="url(#cardGrad)"/>
+    
+    <!-- Top Header Stripe (Emerald) -->
+    <path d="M 25 30 C 25 24.477 29.477 20 35 20 L 93 20 C 98.523 20 103 24.477 103 30 L 103 35 L 25 35 Z" fill="#1b5643"/>
+    
+    <!-- Status indicator dot & label -->
+    <circle cx="34" cy="27.5" r="2.5" fill="#34d399"/>
+    <rect x="42" y="25.5" width="30" height="4" rx="2" fill="rgba(255,255,255,0.65)"/>
+
+    <!-- Data Rows (Representing Salary & Workers Records) -->
+    <rect x="35" y="44" width="46" height="5" rx="2.5" fill="#cdc6b8"/>
+    <rect x="35" y="55" width="36" height="5" rx="2.5" fill="#cdc6b8"/>
+    <rect x="35" y="66" width="22" height="5" rx="2.5" fill="#cdc6b8"/>
+    <rect x="35" y="77" width="16" height="5" rx="2.5" fill="#cdc6b8"/>
+  </g>
+
+  <!-- Focus Reticle & Plus Badge (Symmetrically Centered on the Circle) -->
+  <g filter="url(#badgeShadow)">
+    <!-- 4 Symmetrical Focus Reticle Corners centered around (cx=85, cy=82) -->
+    <!-- Top-Left Corner (┌) -->
+    <path d="M 60 66 L 60 59 A 2 2 0 0 1 62 57 L 69 57" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Top-Right Corner (┐) -->
+    <path d="M 110 66 L 110 59 A 2 2 0 0 0 108 57 L 101 57" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Bottom-Left Corner (└) -->
+    <path d="M 60 98 L 60 105 A 2 2 0 0 0 62 107 L 69 107" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Bottom-Right Corner (┘) -->
+    <path d="M 110 98 L 110 105 A 2 2 0 0 1 108 107 L 101 107" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Circular Badge (Centered at 85, 82, Radius 21) -->
+    <circle cx="85" cy="82" r="21" fill="url(#mintGrad)"/>
+    <circle cx="85" cy="82" r="21" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+    
+    <!-- Bold White Plus Symbol (+) -->
+    <path d="M 85 72 L 85 92 M 75 82 L 95 82" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+</svg>
